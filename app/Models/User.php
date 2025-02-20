@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +13,7 @@ class User extends Model
 
         \Log::info("Login attempt: UserID={$userId}, IP={$clientIP}, Browser={$browser}");
 
-        // Panggil Stored Procedure
+        // Panggil Stored Procedure Login
         $result = DB::select("EXEC SAspTrxUserLoginCheck ?, ?, ?, ?", [
             $userId,
             $hashedPassword,
@@ -24,12 +23,17 @@ class User extends Model
 
         \Log::info("Stored Procedure Output:", (array) $result);
 
-        // Pastikan hasilnya tidak kosong dan ambil indeks pertama
-        if (!empty($result)) {
-            return $result[0]; // Ambil objek pertama
-        }
+        // Jika login berhasil, ambil hasilnya
+        return !empty($result) ? $result[0] : null;
+    }
 
-        return null; // Login gagal
+    public static function getUserMenuAuth($userId)
+    {
+        // Panggil Stored Procedure untuk mendapatkan menu otorisasi
+        $menus = DB::select("EXEC SAspGetUserMenuAuth ?", [$userId]);
+
+        \Log::info("User Menu Auth Output:", (array) $menus);
+
+        return $menus; // Kembalikan daftar menu
     }
 }
-

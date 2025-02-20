@@ -20,7 +20,7 @@ class AuthController extends Controller
         ]);
 
         $userId = $request->input('userId');
-        $password = $request->input('password'); // Jangan di-hash ulang!
+        $password = $request->input('password');
 
         \Log::info("Raw Password (Tanpa Hashing): '{$password}'");
 
@@ -32,7 +32,13 @@ class AuthController extends Controller
             $loginMessage = $user->LoginResultMessage ?? 'Login Gagal';
 
             if ($loginResult == 1) {
+                // Panggil Stored Procedure untuk mendapatkan menu otorisasi
+                $menus = User::getUserMenuAuth($userId);
+
+                // Simpan user & menu ke dalam session
                 Session::put('user', $user);
+                Session::put('user_menus', $menus);
+
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Login Berhasil!',
@@ -58,12 +64,14 @@ class AuthController extends Controller
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        return view('dashboard');
+        return view('dashboard', [
+            'menus' => Session::get('user_menus') // Kirim menu ke tampilan
+        ]);
     }
 
     public function logout()
     {
-        Session::forget('user');
+        Session::flush();
         return redirect()->route('login')->with('success', 'Logout Berhasil!');
     }
 }
