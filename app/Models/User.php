@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ class User extends Model
 
         \Log::info("Login attempt: UserID={$userId}, IP={$clientIP}, Browser={$browser}");
 
-        // Panggil Stored Procedure tanpa hashing ulang
+        // Panggil Stored Procedure
         $result = DB::select("EXEC SAspTrxUserLoginCheck ?, ?, ?, ?", [
             $userId,
             $hashedPassword,
@@ -23,10 +24,12 @@ class User extends Model
 
         \Log::info("Stored Procedure Output:", (array) $result);
 
-        if (!empty($result) && isset($result[0]->LoginResult)) {
-            return $result[0]; // Login sukses
+        // Pastikan hasilnya tidak kosong dan ambil indeks pertama
+        if (!empty($result)) {
+            return $result[0]; // Ambil objek pertama
         }
 
         return null; // Login gagal
     }
 }
+
