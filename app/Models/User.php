@@ -3,7 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-
+use PDO;
 class User extends Model
 {
     public static function login($userId, $hashedPassword)
@@ -13,19 +13,40 @@ class User extends Model
 
         \Log::info("Login attempt: UserID={$userId}, IP={$clientIP}, Browser={$browser}");
 
-        // Panggil Stored Procedure Login
-        $result = DB::select("EXEC SAspTrxUserLoginCheck ?, ?, ?, ?", [
-            $userId,
-            $hashedPassword,
-            $clientIP,
-            $browser
-        ]);
+        try {
+            // Gunakan koneksi PDO dari Laravel
+            $pdo = DB::getPdo();
+            $stmt = $pdo->prepare('EXEC SAspTrxUserLoginCheck ?, ?, ?, ?');
+            $stmt->execute([$userId, $hashedPassword, $clientIP, $browser]);
 
-        \Log::info("Stored Procedure Output:", (array) $result);
+            $results = [];
 
-        // Jika login berhasil, ambil hasilnya
-        return !empty($result) ? $result[0] : null;
+            do {
+                $rowset = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                if ($rowset) {
+                    $results[] = $rowset; // Simpan semua result set
+                }
+            } while ($stmt->nextRowset());
+
+            // Log hasil query untuk debugging
+            \Log::info('oktest: ' . json_encode($results, JSON_PRETTY_PRINT));
+
+            // Jika stored procedure tidak mengembalikan hasil, return 401
+            if (empty($results) || empty($results[0])) {
+                \Log::warning("Login failed: No data returned");
+                return response()->json(['error' => 'Invalid credentials'], 401);
+            }
+
+            // Jika ada data, ambil hanya array pertama untuk validasi login
+            return $results[0];
+
+        } catch (\Exception $e) {
+            \Log::error("Login error: " . $e->getMessage());
+            return response()->json(['error' => 'Login failed'], 401);
+        }
     }
+
+
 
     public static function getUserMenuAuth($userId)
     {
