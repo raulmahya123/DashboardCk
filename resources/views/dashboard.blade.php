@@ -23,23 +23,27 @@
 
             <!-- Logo -->
             <div class="flex items-center space-x-2">
-                <img src="{{ asset('assets/login/Logodashboard.png') }}" alt="Logo" class="h-16">
+                <img src="{{ asset('assets/login/Logodashboard.png') }}" alt="Logo" class="h-10">
             </div>
         </div>
 
         <!-- Right Section (Profile) -->
         <div class="flex items-center space-x-4">
-            <p class="text-gray-700 font-medium">
-                Login Result: {{ session('user')->LoginResult ?? 'N/A' }}
-            </p>
             <i data-lucide="user-circle" class="w-6 h-6 text-gray-700"></i>
+
+            <p class="text-gray-700 font-medium">
+                {{ session('user_details')->CompleteUserName ?? 'Redi Taufik Solleh' }}
+            </p>
+
+            {{-- <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg">
+                    Logout
+                </button>
+            </form> --}}
         </div>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg">
-                Logout
-            </button>
-        </form>
+
+
         <!-- NAVBAR MENU DROPDOWN -->
         <div
             x-show="navbarOpen"
@@ -81,8 +85,34 @@
                         </div>
                     @endif
                 @endforeach
+
             </nav>
         </div>
+
+    </div>
+    <div class="container mx-auto mt-20 p-4">
+        <h3 class="text-lg font-semibold text-gray-800">Stored Procedure Results:</h3>
+        @if(session()->has('user_details') && is_array(session('user_details')))
+            @foreach(session('user_details') as $index => $group)
+                @if($index === 3  && is_array($group)) <!-- Hanya tampilkan dataset ke-4 (indeks 3) -->
+                    <div class="mt-3 p-3 border rounded bg-gray-100">
+                        <h4 class="text-gray-600">Dataset 4</h4>
+                        @foreach($group as $data)
+                            @if(is_array($data) || is_object($data))
+                                <ul class="list-disc pl-5 text-gray-700">
+                                    @foreach($data as $key => $value)
+                                        <li><strong>{{ $key }}:</strong> {{ $value }}</li>
+                                    @endforeach
+                                </ul>
+                                <hr class="my-2">
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
+            @endforeach
+        @else
+            <p class="text-red-500">No data available.</p>
+        @endif
     </div>
 
 

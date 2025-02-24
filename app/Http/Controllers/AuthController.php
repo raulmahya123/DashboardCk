@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Session;
-use App\Models\Log;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -14,57 +14,54 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-{
-    $request->validate([
-        'userId'   => 'required|string',
-        'password' => 'required|string'
-    ]);
-
-    $userId = $request->input('userId');
-    $password = $request->input('password');
-
-    \Log::info("Raw Password (Tanpa Hashing): '{$password}'");
-
-    // Panggil function login di Model
-    $user = User::login($userId, $password);
-
-    \Log::info('User Login Result: ' . json_encode($user, JSON_PRETTY_PRINT));
-
-    // Pastikan hasil login ada
-    if (!empty($user) && is_array($user)) {
-        $user = (object) $user[0]; // Ubah array ke object, ambil hasil pertama
-    } else {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'User ID atau Password salah!'
-        ], 401);
-    }
-
-    $loginResult = $user->LoginResult ?? 0;
-    $loginMessage = $user->LoginResultMessage ?? 'Login Gagal';
-
-    if ($loginResult == 1) {
-        // Panggil Stored Procedure untuk mendapatkan menu otorisasi
-        $menus = User::getUserMenuAuth($userId);
-
-        // Simpan user & menu ke dalam session
-        Session::put('user', $user);
-        Session::put('user_menus', $menus);
-        Session::save();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Login Berhasil!',
-            'redirect' => route('dashboard')
+    {
+        $request->validate([
+            'userId'   => 'required|string',
+            'password' => 'required|string'
         ]);
-    } else {
-        return response()->json([
-            'status' => 'error',
-            'message' => $loginMessage
-        ], 401);
-    }
-}
 
+        $userId = $request->input('userId');
+        $password = $request->input('password');
+
+        Log::info("Raw Password (Tanpa Hashing): '{$password}'");
+
+        // Panggil function login di Model
+        $results = User::login($userId, $password);
+
+        Log::info('User Login Result: ' . json_encode($results, JSON_PRETTY_PRINT));
+
+        if (empty($results) || !is_array($results) || empty($results[0])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User ID atau Password salah!'
+            ], 401);
+        }
+
+        $user = (object) $results[0][0]; // Ambil hasil pertama sebagai user info
+
+        $loginResult = $user->LoginResult ?? 0;
+        $loginMessage = $user->LoginResultMessage ?? 'Login Gagal';
+
+        if ($loginResult == 1) {
+            $menus = User::getUserMenuAuth($userId);
+
+            Session::put('user', $user);
+            Session::put('user_menus', $menus);
+            Session::put('user_details', $results); // Simpan seluruh hasil stored procedure
+            Session::save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Login Berhasil!',
+                'redirect' => route('dashboard')
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => $loginMessage
+            ], 401);
+        }
+    }
 
     public function dashboard()
     {
@@ -73,7 +70,7 @@ class AuthController extends Controller
         }
 
         return view('dashboard', [
-            'menus' => Session::get('user_menus') // Kirim menu ke tampilan
+            'menus' => Session::get('user_menus')
         ]);
     }
 

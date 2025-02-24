@@ -4,6 +4,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use PDO;
+use App\Models\Log;
+
 class User extends Model
 {
     public static function login($userId, $hashedPassword)
@@ -14,7 +16,6 @@ class User extends Model
         \Log::info("Login attempt: UserID={$userId}, IP={$clientIP}, Browser={$browser}");
 
         try {
-            // Gunakan koneksi PDO dari Laravel
             $pdo = DB::getPdo();
             $stmt = $pdo->prepare('EXEC SAspTrxUserLoginCheck ?, ?, ?, ?');
             $stmt->execute([$userId, $hashedPassword, $clientIP, $browser]);
@@ -24,25 +25,22 @@ class User extends Model
             do {
                 $rowset = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 if ($rowset) {
-                    $results[] = $rowset; // Simpan semua result set
+                    $results[] = $rowset;
                 }
             } while ($stmt->nextRowset());
 
-            // Log hasil query untuk debugging
-            \Log::info('oktest: ' . json_encode($results, JSON_PRETTY_PRINT));
+            \Log::info('Stored Procedure Results: ' . json_encode($results, JSON_PRETTY_PRINT));
 
-            // Jika stored procedure tidak mengembalikan hasil, return 401
             if (empty($results) || empty($results[0])) {
                 \Log::warning("Login failed: No data returned");
-                return response()->json(['error' => 'Invalid credentials'], 401);
+                return null; // Ubah dari response JSON ke null agar mudah dikelola di controller
             }
 
-            // Jika ada data, ambil hanya array pertama untuk validasi login
-            return $results[0];
+            return $results; // Mengembalikan semua dataset yang dihasilkan stored procedure
 
         } catch (\Exception $e) {
             \Log::error("Login error: " . $e->getMessage());
-            return response()->json(['error' => 'Login failed'], 401);
+            return null;
         }
     }
 
