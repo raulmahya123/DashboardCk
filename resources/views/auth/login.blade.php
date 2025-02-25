@@ -16,7 +16,7 @@
 <body class="bg-login flex items-center justify-end min-h-screen p-10">
 
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md relative">
-        <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white rounded-full shadow-lg p-2">
+        <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white rounded shadow-lg p-2">
             <img src="{{ asset('assets/login/logo.png') }}" alt="Logo" class="h-16">
         </div>
 
@@ -59,6 +59,7 @@
         </div>
     </div>
 
+
     <script>
         $(document).ready(function () {
             $("#loginForm").submit(function (event) {
@@ -95,6 +96,5 @@
             });
         });
     </script>
-
 </body>
 </html>
