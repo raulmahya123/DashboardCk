@@ -12,12 +12,14 @@
 </head>
 <body class="h-screen flex flex-col bg-cover bg-center"
     style="background-image: url('{{ asset('assets/login/bg.png') }}');">
-    <div class="flex h-screen" x-data="{ open: false, selectedMenu: null, openDropdown: false }">
+    <div class="flex h-screen" x-data="{ open: true, selectedMenu: null, openDropdown: false }">
         <!-- Sidebar -->
-        <aside class="fixed inset-y-0 left-0 z-50 bg-[#DFE8F6] text-black w-64 h-screen py-7 px-2 space-y-6 overflow-y-auto transform transition-transform duration-300"
+        <aside class="fixed inset-y-0 left-0 z-50 bg-sky-200 text-black w-64 h-screen py-7 px-2 space-y-6 overflow-y-auto transform transition-transform duration-300"
             :class="{'-translate-x-full': !open}">
+
             <div class="flex justify-between items-center px-4">
-                <img src="{{ asset('assets/login/logo-ck.png') }}" alt="logo" class="text-2xl font-semibold text-[#133E87]">
+            <img src="{{ asset('assets/login/logo-ck.png') }}" alt="logo" class="text-2xl font-semibold text-[#133E87]">
+
                 <button @click="open = false" class="text-gray-700 focus:outline-none">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
@@ -72,10 +74,17 @@
         <!-- Main Content -->
         <div class="flex-1 flex flex-col">
             <!-- Navbar -->
-            <header class="bg-white shadow flex justify-between items-center p-4">
-                <button @click="open = !open" class="text-gray-700 focus:outline-none">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
-                </button>
+            <header class="bg-sky-200 shadow flex justify-between items-center p-4">
+                <div class="flex items-center space-x-2">
+
+                    <!-- Tambahkan Logo dan Teks Tender -->
+                    <img src="{{ asset('assets/login/logo-ck.png') }}" alt="logo" class="w-8 h-8">
+                    <span class="text-sky-800 font-semibold text-lg">Tender</span>
+                    <button @click="open = !open" class="text-gray-700 focus:outline-none">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
                 <div x-data="{ openDropdown: false }" class="relative">
                     <button @click="openDropdown = !openDropdown" class="flex items-center space-x-2 focus:outline-none">
                         <i data-lucide="user" class="w-6 h-6 text-black"></i>
@@ -105,6 +114,8 @@
                     </div>
                 </div>
             </header>
+
+
 
             <!-- Content Area -->
             <main class="p-6 flex justify-center items-start h-screen w-full">
