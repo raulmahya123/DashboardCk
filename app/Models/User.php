@@ -32,27 +32,68 @@ class User extends Model
             \Log::info('Stored Procedure Results: ' . json_encode($results, JSON_PRETTY_PRINT));
 
             if (empty($results) || empty($results[0])) {
-                \Log::warning("Login failed: No data returned");
+                \Log::warning('Login failed: No data returned');
                 return null; // Ubah dari response JSON ke null agar mudah dikelola di controller
             }
 
             return $results; // Mengembalikan semua dataset yang dihasilkan stored procedure
-
         } catch (\Exception $e) {
-            \Log::error("Login error: " . $e->getMessage());
+            \Log::error('Login error: ' . $e->getMessage());
             return null;
         }
     }
-
-
-
     public static function getUserMenuAuth($userId)
     {
-        // Panggil Stored Procedure untuk mendapatkan menu otorisasi
-        $menus = DB::select("EXEC SAspGetUserMenuAuth ?", [$userId]);
+        // Panggil stored procedure untuk mendapatkan daftar menu
+        $menus = DB::select('EXEC SAspGetUserMenuAuthDashboard ?', [$userId]);
 
-        \Log::info("User Menu Auth Output:", (array) $menus);
+        \Log::info('User Menu Auth Output:', ['menus' => $menus]);
 
-        return $menus; // Kembalikan daftar menu
+        if (empty($menus)) {
+            \Log::error("Data menu tidak ditemukan untuk userId: $userId");
+            return [];
+        }
+
+        // Loop melalui setiap menu untuk mendapatkan FormType
+        foreach ($menus as $menu) {
+            if (!empty($menu->FormURLAddress) && str_contains($menu->FormURLAddress, 'FormType=')) {
+                parse_str(parse_url($menu->FormURLAddress, PHP_URL_QUERY), $queryParams);
+                $formType = $queryParams['FormType'] ?? null;
+
+                if ($formType) {
+                    \Log::info("Memanggil wsSAspGetLinkPowerBI dengan", [
+                        'formType' => $formType,
+                        'userId' => $userId
+                    ]);
+
+                    // Panggil stored procedure Power BI
+                    $powerBILinkResult = DB::select('EXEC wsSAspGetLinkPowerBI ?, ?', [$formType, $userId]);
+
+                    \Log::info("Hasil Query Power BI:", ['result' => $powerBILinkResult]);
+
+                    // Pastikan hasil query tidak kosong sebelum ditugaskan
+                    if (!empty($powerBILinkResult)) {
+                        $firstResult = $powerBILinkResult[0]; // Ambil elemen pertama
+                        if (isset($firstResult->stdClass) && isset($firstResult->stdClass->LinkPowerBI)) {
+                            $menu->PowerBILink = $firstResult->stdClass->LinkPowerBI;
+                        } elseif (isset($firstResult->LinkPowerBI)) {
+                            $menu->PowerBILink = $firstResult->LinkPowerBI;
+                        } else {
+                            $menu->PowerBILink = null;
+                        }
+                    } else {
+                        $menu->PowerBILink = null;
+                    }
+
+                    \Log::info("Power BI Link untuk UserId: $userId dan FormType: $formType", [
+                        'PowerBILink' => $menu->PowerBILink
+                    ]);
+                }
+            }
+        }
+
+        return $menus;
     }
+
+
 }

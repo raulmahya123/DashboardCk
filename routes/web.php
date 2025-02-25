@@ -2,7 +2,26 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PowerBIController;
+
 use Illuminate\Support\Facades\DB;
+
+Route::get('/powerbi', function (Request $request) {
+    $userId = auth()->user()->id ?? "xupj10rts"; // Ganti sesuai kebutuhan
+    $formType = $request->query('FormType');
+
+    if (!$formType) {
+        return response()->json(['error' => 'FormType is required'], 400);
+    }
+
+    $redirectUrl = User::getPowerBILink($userId, $formType);
+
+    if (!$redirectUrl) {
+        return response()->json(['error' => 'No data found or failed to generate URL'], 404);
+    }
+
+    return Redirect::to($redirectUrl);
+});
 Route::get('/', function () {
     return redirect()->route('login');
 });

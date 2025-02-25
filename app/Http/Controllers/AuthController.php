@@ -23,12 +23,12 @@ class AuthController extends Controller
         $userId = $request->input('userId');
         $password = $request->input('password');
 
-        Log::info("Raw Password (Tanpa Hashing): '{$password}'");
+        \Log::info("Raw Password (Tanpa Hashing): '{$password}'");
 
         // Panggil function login di Model
         $results = User::login($userId, $password);
 
-        Log::info('User Login Result: ' . json_encode($results, JSON_PRETTY_PRINT));
+        \Log::info('User Login Result: ' . json_encode($results, JSON_PRETTY_PRINT));
 
         if (empty($results) || !is_array($results) || empty($results[0])) {
             return response()->json([
@@ -79,4 +79,7 @@ class AuthController extends Controller
         Session::flush();
         return redirect()->route('login')->with('success', 'Logout Berhasil!');
     }
+
+
+
 }
