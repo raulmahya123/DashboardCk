@@ -12,16 +12,16 @@
 </head>
 <body class="h-screen flex flex-col bg-cover bg-center"
     style="background-image: url('{{ asset('assets/login/bg.png') }}');">
-    <div class="flex h-screen" x-data="{ open: false }">
+    <div class="flex h-screen" x-data="{ open: false, selectedMenu: null, openDropdown: false }">
         <!-- Sidebar -->
-        <aside class="bg-[#DFE8F6] text-black w-64 h-screen py-7 px-2 space-y-6 overflow-y-auto md:block hover:text-blue-500"
-            :class="{'hidden': !open && window.innerWidth < 768}">
-            {{-- <h1 class="text-2xl font-semibold text-center text-[#133E87]">TENDER</h1> --}}
-            <div class="flex justify-center">
-                <img src="{{ asset('assets/login/logo-ck.png') }}" alt="logo" class="text-2xl font-semibold text-center text-[#133E87]">
+        <aside class="fixed inset-y-0 left-0 z-50 bg-[#DFE8F6] text-black w-64 h-screen py-7 px-2 space-y-6 overflow-y-auto transform transition-transform duration-300"
+            :class="{'-translate-x-full': !open}">
+            <div class="flex justify-between items-center px-4">
+                <img src="{{ asset('assets/login/logo-ck.png') }}" alt="logo" class="text-2xl font-semibold text-[#133E87]">
+                <button @click="open = false" class="text-gray-700 focus:outline-none">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
             </div>
-
-
             <nav>
                 @foreach ($menus as $menu)
                     @php
@@ -30,7 +30,7 @@
                     @endphp
 
                     @if ($hasPowerBILink)
-                    <div class="flex items-center text-[#133E87] font-semibold py-2 px-4 bg-white border border-gray-300 rounded shadow-md hover:bg-gray-100 hover:text-blue-500 cursor-pointer">
+                    <div @click="selectedMenu = '{{ $menu->PowerBILink }}'" class="flex items-center text-[#133E87] font-semibold py-2 px-4 bg-white border border-gray-300 rounded shadow-md hover:bg-gray-100 hover:text-blue-500 cursor-pointer">
                         <i data-lucide="bar-chart-2" class="mr-2"></i> DASHBOARD BI
                     </div>
                     @elseif ($hasURL)
@@ -51,7 +51,7 @@
                             <div x-show="open" x-cloak class="ml-4 max-h-[300px] overflow-y-auto rounded-lg hover:text-blue-500">
                                 @foreach ($menus as $submenu)
                                     @if ($submenu->ParentRoleLineID === $menu->RoleLineID)
-                                        <a href="{{ $submenu->FormURLAddress ?? '#' }}" class="flex  items-center py-2 px-4 rounded-lg hover:bg-[#FFFFFF]">
+                                        <a href="{{ $submenu->FormURLAddress ?? '#' }}" class="flex items-center py-2 px-4 rounded-lg hover:bg-[#FFFFFF]">
                                             @if (!empty($submenu->IconFileName))
                                                 <img src="{{ asset('icons/' . $submenu->IconFileName) }}" class="w-5 h-5 mr-2">
                                             @endif
@@ -66,20 +66,16 @@
             </nav>
         </aside>
 
+        <!-- Overlay untuk menutup sidebar -->
+        <div x-show="open" @click="open = false" class="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity"></div>
+
         <!-- Main Content -->
         <div class="flex-1 flex flex-col">
             <!-- Navbar -->
             <header class="bg-white shadow flex justify-between items-center p-4">
-                <div class="flex items-center gap-4">
-                    <!-- Tombol Menu (Mobile) -->
-                    <button @click="open = !open" class="text-gray-700 focus:outline-none md:hidden">
-                        <i data-lucide="menu" class="w-6 h-6"></i>
-                    </button>
-
-                    <!-- Logo -->
-                </div>
-
-                <!-- Dropdown Profile -->
+                <button @click="open = !open" class="text-gray-700 focus:outline-none">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
                 <div x-data="{ openDropdown: false }" class="relative">
                     <button @click="openDropdown = !openDropdown" class="flex items-center space-x-2 focus:outline-none">
                         <i data-lucide="user" class="w-6 h-6 text-black"></i>
@@ -98,9 +94,7 @@
                                 @endif
                             @endforeach
                         @else
-                            <div class="p-2 text-red-500">
-                                No CompleteUserName found.
-                            </div>
+                            <div class="p-2 text-red-500">No CompleteUserName found.</div>
                         @endif
                         <form method="POST" action="{{ route('logout') }}" class="mt-2">
                             @csrf
@@ -114,27 +108,26 @@
 
             <!-- Content Area -->
             <main class="p-6 flex justify-center items-start h-screen w-full">
-                @foreach ($menus as $menu)
-                    @if (!empty($menu->PowerBILink))
-                        <div class="bg-white shadow-lg rounded-lg w-full h-[88vh] flex flex-col">
-                            <div class="p-4 border-b">
-                                <h3 class="text-lg font-semibold flex items-center">
-                                    <i data-lucide="bar-chart-2" class="mr-2"></i> Dashboard BI
-                                </h3>
-                            </div>
-                            <iframe src="{{ $menu->PowerBILink }}" class="w-full h-[70vh] flex-grow rounded-lg" frameborder="0" allowfullscreen></iframe>
+                <template x-if="selectedMenu">
+                    <div class="bg-white shadow-lg rounded-lg w-full h-[88vh] flex flex-col">
+                        <div class="p-4 border-b">
+                            <h3 class="text-lg font-semibold flex items-center">
+                                <i data-lucide="bar-chart-2" class="mr-2"></i> Dashboard BI
+                            </h3>
                         </div>
-                    @endif
-                @endforeach
+                        <iframe :src="selectedMenu" class="w-full h-[70vh] flex-grow rounded-lg" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </template>
+                <template x-if="!selectedMenu">
+                    <div class="flex flex-col justify-center items-center h-full text-center space-y-4">
+                        <h1 class="text-4xl font-bold text-blue-600">Selamat Datang di Dashboard CK</h1>
+                        <p class="text-lg text-gray-700">Silakan klik <strong class="text-blue-500">Dashboard BI</strong> untuk melihat data.</p>
+                    </div>
+                </template>
+
             </main>
-
-
         </div>
     </div>
-
-
-
-
     <script>
         $(document).ready(function() {
             lucide.createIcons();
