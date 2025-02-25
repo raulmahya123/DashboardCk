@@ -1,0 +1,24 @@
+:root {
+    --bs-dark-bg: #121212;
+    --bs-dark-text: #e4e4e4;
+    --bs-dark-border: #343a40;
+}
+
+.body-dark-mode {
+    background-color: var(--bs-dark-bg);
+    color: var(--bs-dark-text);
+}
+
+.body-dark-mode .border-dark-mode {
+    border-color: var(--bs-dark-border) !important;
+}
+
+.card.body-dark-mode {
+    background-color: var(--bs-dark-bg);
+    color: var(--bs-dark-text);
+}
+
+.navbar-dark-mode {
+    background-color: var(--bs-dark-border);
+    color: var(--bs-dark-text);
+}

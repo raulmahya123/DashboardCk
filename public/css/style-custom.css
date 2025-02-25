@@ -1,0 +1,14 @@
+.modal-backdrop {
+    width: 100% !important;
+    height: 100% !important;
+    /* background-color: red; */
+}
+
+.modal {
+    background-color: #3f37c9 !important;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+}
