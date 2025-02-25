@@ -13,209 +13,120 @@
             <span class="d-none d-lg-block px-2"> Tender</span>
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
-    </div><!-- End Logo -->
-
-    <!-- <div class="search-bar">
-        <form class="search-form d-flex align-items-center" method="POST" action="#">
-            <input type="text" name="query" placeholder="Search" title="Enter search keyword">
-            <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-        </form>
-    </div>End Search Bar -->
-
+    </div>
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 
-            <!-- <li class="nav-item d-block d-lg-none">
-                <a class="nav-link nav-icon search-bar-toggle " href="#">
-                    <i class="bi bi-search"></i>
-                </a>
-            </li>End Search Icon -->
 
             <li class="nav-item dropdown" style="display:none;">
 
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-bell"></i>
-                    <span class="badge bg-primary badge-number">4</span>
-                </a><!-- End Notification Icon -->
+                <li class="nav-item dropdown pe-3">
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown"
+                        style="background-color: #dfe8f6;">
+                        <img src="{{ URL::asset('/img/profile-img.jpg') }}" alt="Profile" class="rounded-circle" width="35">
+                        <span class="d-none d-md-block dropdown-toggle ps-2">
+                            {{ Str::of(Session::get('userid'))->limit(10) }}
+                        </span>
+                    </a>
 
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                    <li class="dropdown-header">
-                        You have 4 new notifications
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        @if (session()->has('user_details') && is_array(session('user_details')))
+                            @foreach (session('user_details') as $index => $group)
+                                @if ($index === 3 && is_array($group))
+                                    @foreach ($group as $data)
+                                        @if (is_array($data) && isset($data['CompleteUserName']))
+                                            <li class="dropdown-header text-center">
+                                                <h6 class="fw-bold mb-0">{{ $data['CompleteUserName'] }}</h6>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            @endforeach
+                        @else
+                            <li class="dropdown-header text-center text-danger">No CompleteUserName found.</li>
+                        @endif
 
-                    <li class="notification-item">
-                        <i class="bi bi-exclamation-circle text-warning"></i>
-                        <div>
-                            <h4>Lorem Ipsum</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>30 min. ago</p>
-                        </div>
-                    </li>
+                        <li><hr class="dropdown-divider"></li>
 
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}" id="form_logout">
+                                @csrf
+                                <button type="submit" class="btn w-100 text-start d-flex align-items-center text-black py-2 px-4 logout-btn">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
 
-                    <li class="notification-item">
-                        <i class="bi bi-x-circle text-danger"></i>
-                        <div>
-                            <h4>Atque rerum nesciunt</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>1 hr. ago</p>
-                        </div>
-                    </li>
+                <style>
+                .logout-btn {
+                    background: none;
+                    border: none;
+                    font-size: 16px;
+                    transition: background-color 0.3s, color 0.3s;
+                    width: 100%;
+                    text-align: left;
+                }
 
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                .logout-btn:hover {
+                    background-color: #133E87;
+                    color: white;
+                    border-radius: 5px;
+                }
+                </style>
 
-                    <li class="notification-item">
-                        <i class="bi bi-check-circle text-success"></i>
-                        <div>
-                            <h4>Sit rerum fuga</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>2 hrs. ago</p>
-                        </div>
-                    </li>
+                <script>
+                $(document).ready(function() {
+                    $("#form_logout").submit(function(e) {
+                        e.preventDefault();
+                        var form = $(this);
+                        var actionUrl = form.attr('action');
 
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="notification-item">
-                        <i class="bi bi-info-circle text-primary"></i>
-                        <div>
-                            <h4>Dicta reprehenderit</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>4 hrs. ago</p>
-                        </div>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all notifications</a>
-                    </li>
-
-                </ul><!-- End Notification Dropdown Items -->
-
-            </li><!-- End Notification Nav -->
-
-            <li class="nav-item dropdown" style="display:none;">
-
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-chat-left-text"></i>
-                    <span class="badge bg-success badge-number">3</span>
-                </a><!-- End Messages Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                    <li class="dropdown-header">
-                        You have 3 new messages
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="" alt="" class="rounded-circle">
-                            <div>
-                                <h4>Maria Hudson</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                <p>4 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="" alt="" class="rounded-circle">
-                            <div>
-                                <h4>Anna Nelson</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                <p>6 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="" alt="" class="rounded-circle">
-                            <div>
-                                <h4>David Muldon</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                <p>8 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="dropdown-footer">
-                        <a href="#">Show all messages</a>
-                    </li>
-
-                </ul><!-- End Messages Dropdown Items -->
-
-            </li><!-- End Messages Nav -->
-
-            <li class="nav-item dropdown pe-3">
-
-                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown"
-                    style="background-color: #dfe8f6;">
-                    <img src="{{ URL::asset('/img/profile-img.jpg') }}" alt="Profile" class="rounded-circle">
-                    <span
-                        class="d-none d-md-block dropdown-toggle ps-2">{{ Str::of(Session::get('userid'))->limit(10) }}</span>
-                </a><!-- End Profile Iamge Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-                    <li class="dropdown-header">
-                        <h6>{{ Session::get('userid') }}</h6>
-                    </li>
-                    <!-- <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                            <i class="bi bi-gear"></i>
-                            <span>Account Settings</span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li> -->
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}" id="form_logout">
-                            @csrf
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <i class="bi bi-box-arrow-right"></i>
-                                <!-- <a type="submit" id="btnLogout">Sign Out</a> -->
-                                <button class="unstyled-button" type="submit">Sign Out</button>
-                            </a>
-                        </form>
-                        <!-- <a class="dropdown-item d-flex align-items-center" href="#">
-                            <i class="bi bi-box-arrow-right"></i>
-                            <span>Sign Out</span>
-                        </a> -->
-                    </li>
-
-                </ul><!-- End Profile Dropdown Items -->
-            </li><!-- End Profile Nav -->
+                        Swal.fire({
+                            title: 'Are You Sure?',
+                            text: 'Do you want to logout from your account?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, Logout',
+                            cancelButtonText: 'Cancel',
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.ajax({
+                                    url: actionUrl,
+                                    method: "POST",
+                                    data: new FormData(form[0]),
+                                    dataType: "json",
+                                    processData: false,
+                                    contentType: false,
+                                    headers: {
+                                        "Accept": "application/json",
+                                        "X-CSRF-Token": $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    beforeSend: function() {
+                                        Swal.fire({
+                                            title: 'Logging out...',
+                                            html: 'Please wait a moment',
+                                            allowOutsideClick: false,
+                                            didOpen: () => {
+                                                Swal.showLoading();
+                                            }
+                                        });
+                                    },
+                                    success: function() {
+                                        window.location.href = '/auth';
+                                    },
+                                    error: function() {
+                                        Swal.fire("Error!", "Failed to logout. Please try again.", "error");
+                                    }
+                                });
+                            }
+                        });
+                    });
+                });
+                </script>
 
         </ul>
     </nav><!-- End Icons Navigation -->
