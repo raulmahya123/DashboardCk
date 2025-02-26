@@ -1,5 +1,5 @@
 .custom-divider {
-    border: 5px solid  rgb(0, 0, 0); /* Ubah ketebalan garis */
+    border: 4px solid rgb(6, 91, 131); /* Ubah ketebalan garis */
     margin: 10px 0; /* Jarak atas dan bawah */
     width: 100%; /* Pastikan lebar penuh */
 }
