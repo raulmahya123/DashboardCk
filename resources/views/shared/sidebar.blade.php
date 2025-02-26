@@ -1,13 +1,33 @@
-<aside id="sidebar" class="sidebar">
+<style>
+    .custom-divider {
+    border: 4px solid rgb(6, 91, 131); /* Ubah ketebalan garis */
+    margin: 10px 0; /* Jarak atas dan bawah */
+    width: 100%; /* Pastikan lebar penuh */
+}
+.sidebar-nav .nav-link {
+    font-size: 20px; /* Perbesar font */
+    font-weight: bold; /* Tambahkan ketebalan */
+}
+
+.sidebar-nav .nav-heading {
+    font-size: 20px; /* Perbesar teks pada heading */
+    font-weight: bold;
+}
+
+</style>
+<aside id="sidebar" class="sidebar mt-5">
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-item">
             <a class="nav-link" href="{{ route('dashboard') }}">
                 <i class="bi bi-grid"></i>
-                <span>Dashboard</span>
+                <span>MENU</span>
             </a>
         </li>
 
-        <li class="nav-heading text-white fw-bold">Pages</li>
+        <li class="nav-heading">
+            <hr class="custom-divider">
+        </li>
+
 
         @foreach ($menus as $menu)
             @if ($menu->ParentRoleLineID === null)

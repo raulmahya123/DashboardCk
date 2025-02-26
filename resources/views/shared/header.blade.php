@@ -1,4 +1,35 @@
 <style>
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        /* Pastikan teks mulai dari kiri */
+        width: 100%;
+        /* Pastikan header memanjang */
+        padding: 10px 20px;
+        white-space: nowrap;
+        /* Mencegah teks terpotong ke baris lain */
+        height: 120px;
+        /* Perbesar tinggi header */
+        padding: 20px 25px;
+        /* Tambahkan padding agar lebih luas */
+        align-items: center;
+    }
+
+    .logo {
+        max-height: 60px;
+        /* Sesuaikan ukuran logo */
+        margin-right: 15px;
+        /* Beri jarak antara logo dan teks */
+    }
+
+    .header-title {
+        font-size: 1.8rem;
+        /* Sesuaikan ukuran font */
+        white-space: nowrap;
+        /* Hindari pemisahan teks */
+    }
+
     .unstyled-button {
         border: none;
         padding: 0;
@@ -38,14 +69,38 @@
     .logo img {
         max-height: 40px;
     }
+
+
+    #menuToggle {
+        margin-left: 200px;
+        /* Bisa diubah sesuai kebutuhan */
+    }
+
+    @media (max-width: 1441px) {
+        #menuToggle {
+            margin-left: 3px;
+        }
+    }
+
+    @media (max-width: 769px) {
+        #menuToggle {
+            margin-left: 5px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        #menuToggle {
+            margin-left: 8px;
+        }
+    }
 </style>
 <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="d-flex align-items-center position-relative">
         <a href="{{ route('dashboard') }}" class="logo d-flex align-items-center text-decoration-none">
             <img src="{{ URL::asset('/img/logo-ck.png') }}" alt="">
-            <span class="d-none d-lg-block px-2">Tender</span>
+            <span class="d-none d-lg-block px-2">Dashboard PT Ciptra Kridatama</span>
         </a>
-        <i class="bi bi-list toggle-sidebar-btn ms-2" id="menuToggle"></i>
+        <i class="bi bi-list toggle-sidebar-btn" id="menuToggle"></i>
     </div>
 
 
@@ -178,12 +233,12 @@
 
                         if (isToggled) {
                             menuToggle.style.position = "absolute";
-                            menuToggle.style.right = "130px";
-                            menuToggle.style.left = "130px"; // Sesuaikan agar berada di samping "Tender"
+                            menuToggle.style.right = "240px";
+                            menuToggle.style.left = "240px"; // Sesuaikan agar berada di samping "Tender"
                         } else {
                             menuToggle.style.position = "relative";
                             menuToggle.style.left = "auto";
-                            menuToggle.style.right = "20px"; // Kembali ke posisi awal
+                            menuToggle.style.right = "40px"; // Kembali ke posisi awal
                         }
                     });
 
