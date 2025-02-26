@@ -61,15 +61,15 @@ class User extends Model
                 $formType = $queryParams['FormType'] ?? null;
 
                 if ($formType) {
-                    \Log::info("Memanggil wsSAspGetLinkPowerBI dengan", [
+                    \Log::info('Memanggil wsSAspGetLinkPowerBI dengan', [
                         'formType' => $formType,
-                        'userId' => $userId
+                        'userId' => $userId,
                     ]);
 
                     // Panggil stored procedure Power BI
                     $powerBILinkResult = DB::select('EXEC wsSAspGetLinkPowerBI ?, ?', [$formType, $userId]);
 
-                    \Log::info("Hasil Query Power BI:", ['result' => $powerBILinkResult]);
+                    \Log::info('Hasil Query Power BI:', ['result' => $powerBILinkResult]);
 
                     // Pastikan hasil query tidak kosong sebelum ditugaskan
                     if (!empty($powerBILinkResult)) {
@@ -86,7 +86,7 @@ class User extends Model
                     }
 
                     \Log::info("Power BI Link untuk UserId: $userId dan FormType: $formType", [
-                        'PowerBILink' => $menu->PowerBILink
+                        'PowerBILink' => $menu->PowerBILink,
                     ]);
                 }
             }
@@ -94,6 +94,4 @@ class User extends Model
 
         return $menus;
     }
-
-
 }

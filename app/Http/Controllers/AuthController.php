@@ -16,8 +16,8 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'userId'   => 'required|string',
-            'password' => 'required|string'
+            'userId' => 'required|string',
+            'password' => 'required|string',
         ]);
 
         $userId = $request->input('userId');
@@ -31,10 +31,13 @@ class AuthController extends Controller
         \Log::info('User Login Result: ' . json_encode($results, JSON_PRETTY_PRINT));
 
         if (empty($results) || !is_array($results) || empty($results[0])) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User ID atau Password salah!'
-            ], 401);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'User ID atau Password salah!',
+                ],
+                401,
+            );
         }
 
         $user = (object) $results[0][0]; // Ambil hasil pertama sebagai user info
@@ -53,13 +56,16 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Login Berhasil!',
-                'redirect' => route('dashboard')
+                'redirect' => route('dashboard'),
             ]);
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => $loginMessage
-            ], 401);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => $loginMessage,
+                ],
+                401,
+            );
         }
     }
 
@@ -70,7 +76,7 @@ class AuthController extends Controller
         }
 
         return view('dashboard', [
-            'menus' => Session::get('user_menus')
+            'menus' => Session::get('user_menus'),
         ]);
     }
 
@@ -79,7 +85,4 @@ class AuthController extends Controller
         Session::flush();
         return redirect()->route('login')->with('success', 'Logout Berhasil!');
     }
-
-
-
 }

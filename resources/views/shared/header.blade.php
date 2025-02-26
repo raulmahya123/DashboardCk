@@ -7,9 +7,7 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="{{ URL::asset('/css/header.css') }}">
 </head>
-
 <body>
-
     <header id="header" class="header fixed-top d-flex align-items-center">
         <div class="d-flex align-items-center position-relative">
             <a href="{{ route('dashboard') }}" class="logo d-flex align-items-center text-decoration-none">
@@ -18,7 +16,6 @@
             </a>
             <i class="bi bi-list toggle-sidebar-btn" id="menuToggle"></i>
         </div>
-
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
                 <li class="nav-item dropdown  pe-3">
@@ -53,9 +50,10 @@
                         </li>
 
                         <li>
-                            <form id="logout-form"  action="{{ route('logout') }}" method="POST">
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn w-100 text-start d-flex align-items-center text-white py-2 px-4 logout-btn bg-danger">
+                                <button type="submit"
+                                    class="btn w-100 text-start d-flex align-items-center text-white py-2 px-4 logout-btn bg-danger">
                                     <i class="bi bi-box-arrow-right me-2"></i> Logout
                                 </button>
                             </form>
@@ -65,9 +63,7 @@
             </ul>
         </nav>
     </header>
-
     <script src="{{ URL::asset('/js/header.js') }}"></script>
-
 </body>
 
 </html>
