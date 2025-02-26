@@ -1,20 +1,13 @@
-<style>
-    .custom-divider {
-    border: 4px solid rgb(6, 91, 131); /* Ubah ketebalan garis */
-    margin: 10px 0; /* Jarak atas dan bawah */
-    width: 100%; /* Pastikan lebar penuh */
-}
-.sidebar-nav .nav-link {
-    font-size: 20px; /* Perbesar font */
-    font-weight: bold; /* Tambahkan ketebalan */
-}
-
-.sidebar-nav .nav-heading {
-    font-size: 20px; /* Perbesar teks pada heading */
-    font-weight: bold;
-}
-
-</style>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Menu</title>
+    <link rel="stylesheet" href="{{ asset('css/sidenavbar.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<body>
 <aside id="sidebar" class="sidebar mt-5">
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-item">
@@ -27,7 +20,6 @@
         <li class="nav-heading">
             <hr class="custom-divider">
         </li>
-
 
         @foreach ($menus as $menu)
             @if ($menu->ParentRoleLineID === null)
@@ -45,7 +37,7 @@
                                         data-bs-toggle="collapse"
                                         href="#">
                                         <span class="fw-bold">{{ $submenu->FormDescription }}</span>
-                                        <i class="bi bi-chevron-down"></i>
+                                        <i class="bi bi-chevron-down me-1 fs-6"></i> <!-- Ukuran lebih kecil -->
                                     </a>
                                     <ul id="submenu-{{ $submenu->RoleLineID }}" class="nav-content collapse">
                                         @foreach ($menus as $subsubmenu)
@@ -53,7 +45,7 @@
                                                 <li class="nav-item">
                                                     <a href="#" class="d-flex align-items-center"
                                                         @click="selectedMenu = '{{ $subsubmenu->PowerBILink }}'">
-                                                        <i class="bi bi-bar-chart me-2"></i>
+                                                        <i class="bi bi-bar-chart me-2 fs-6"></i> <!-- Ukuran lebih besar -->
                                                         <span>DASHBOARD BI</span>
                                                     </a>
                                                 </li>
@@ -69,3 +61,5 @@
         @endforeach
     </ul>
 </aside>
+</body>
+</html>

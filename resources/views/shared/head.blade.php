@@ -1,7 +1,7 @@
 <meta charset=UTF-8>
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>Tender - @yield('title')</title>
+<title>Dashboard - PT Cipta Kridatama @yield('title')</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,13 +44,3 @@
 <script rel="text/javascript" src="{{ URL::asset('js/datatable/dataTables.rowReorder.js') }}"></script>
 <script rel="text/javascript" src="{{ URL::asset('js/datatable/responsive.dataTables.js') }}"></script>
 <script rel="text/javascript" src="{{ URL::asset('js/datatable/rowReorder.dataTables.js') }}"></script>
-
-<!-- Alertbox  -->
-
-<!-- =======================================================
-  * Template Name: NiceAdmin
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Updated: Apr 20 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
