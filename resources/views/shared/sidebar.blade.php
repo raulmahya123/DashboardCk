@@ -25,6 +25,7 @@
             @if ($menu->ParentRoleLineID === null)
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#menu-{{ $menu->RoleLineID }}" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-bag-heart-fill"></i>
                         <span class="fw-bold">{{ $menu->FormDescription }}</span>
                         <i class="bi bi-chevron-down ms-auto"></i>
                     </a>
@@ -36,8 +37,10 @@
                                         data-bs-target="#submenu-{{ $submenu->RoleLineID }}"
                                         data-bs-toggle="collapse"
                                         href="#">
+                                    <i class="bi bi-door-open me-2 fs-5"></i>
                                         <span class="fw-bold">{{ $submenu->FormDescription }}</span>
                                         <i class="bi bi-chevron-down me-1 fs-6"></i> <!-- Ukuran lebih kecil -->
+
                                     </a>
                                     <ul id="submenu-{{ $submenu->RoleLineID }}" class="nav-content collapse">
                                         @foreach ($menus as $subsubmenu)
@@ -45,7 +48,7 @@
                                                 <li class="nav-item">
                                                     <a href="#" class="d-flex align-items-center"
                                                         @click="selectedMenu = '{{ $subsubmenu->PowerBILink }}'">
-                                                        <i class="bi bi-bar-chart me-2 fs-6"></i> <!-- Ukuran lebih besar -->
+                                                        <i class="bi bi-bar-chart me-2 fs-5"></i> <!-- Ukuran lebih besar -->
                                                         <span>DASHBOARD BI</span>
                                                     </a>
                                                 </li>

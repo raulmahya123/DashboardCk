@@ -11,7 +11,7 @@
 <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="d-flex align-items-center position-relative">
         <a href="{{ route('dashboard') }}" class="logo d-flex align-items-center text-decoration-none">
-            <img src="{{ URL::asset('/img/logo-ck.png') }}" alt="">
+            <img src="{{ URL::asset('/img/logo-ck.png') }}"   alt="">
             <span class="d-none d-lg-block px-2">Dashboard</span>
         </a>
         <i class="bi bi-list toggle-sidebar-btn" id="menuToggle"></i>

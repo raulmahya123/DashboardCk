@@ -13,3 +13,16 @@
     font-size: 20px; /* Perbesar teks pada heading */
     font-weight: bold;
 }
+
+.sidebar-nav {
+    font-size: 28px; /* Perbesar font */
+    font-weight: bold; /* Membuat lebih tebal */
+}
+
+.sidebar-nav .nav-item a {
+    font-size: 20px; /* Sesuaikan ukuran submenu */
+}
+
+.sidebar-nav .bi {
+    font-size: 20px; /* Perbesar ikon */
+}
