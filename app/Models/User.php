@@ -16,32 +16,30 @@ class User extends Model
         \Log::info("Login attempt: UserID={$userId}, IP={$clientIP}, Browser={$browser}");
 
         try {
-            $pdo = DB::getPdo();
-            $stmt = $pdo->prepare('EXEC SAspTrxUserLoginCheck ?, ?, ?, ?');
-            $stmt->execute([$userId, $hashedPassword, $clientIP, $browser]);
-
-            $results = [];
-
-            do {
-                $rowset = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                if ($rowset) {
-                    $results[] = $rowset;
-                }
-            } while ($stmt->nextRowset());
+            // Panggil stored procedure menggunakan Laravel Query Builder
+            $results = DB::select('EXEC SAspTrxUserLoginCheck ?, ?, ?, ?', [
+                $userId, 
+                $hashedPassword, 
+                $clientIP, 
+                $browser
+            ]);
 
             \Log::info('Stored Procedure Results: ' . json_encode($results, JSON_PRETTY_PRINT));
 
-            if (empty($results) || empty($results[0])) {
-                \Log::warning('Login failed: No data returned');
-                return null; // Ubah dari response JSON ke null agar mudah dikelola di controller
+            if (empty($results)) {
+                Log::warning('Login failed: No data returned');
+                return null;
             }
 
-            return $results; // Mengembalikan semua dataset yang dihasilkan stored procedure
+            // Mengembalikan hasil stored procedure sebagai stdClass
+            return $results;
         } catch (\Exception $e) {
             \Log::error('Login error: ' . $e->getMessage());
             return null;
         }
     }
+
+
     public static function getUserMenuAuth($userId)
     {
         // Panggil stored procedure untuk mendapatkan daftar menu
